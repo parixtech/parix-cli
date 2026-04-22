@@ -2,7 +2,7 @@ import type { StoredSession } from './session';
 
 const TRAILING_SLASHES_REGEX = /\/+$/;
 
-export const DEFAULT_BASE_URL = 'https://dev.hypertransactions.com';
+export const DEFAULT_BASE_URL = 'https://dev.parix.io';
 export const LOGIN_TIMEOUT_MS = 5 * 60 * 1000;
 
 export function resolveBaseUrl(input: string | undefined, storedSession?: StoredSession | null) {

@@ -37,7 +37,11 @@ export async function startLoopbackServer(options: StartLoopbackServerOptions): 
     }
   };
 
-  const settle = (handler: ((reason?: unknown) => void) | ((value: CallbackResult) => void) | null, value?: CallbackResult, reason?: unknown) => {
+  const settle = (
+    handler: ((reason?: unknown) => void) | ((value: CallbackResult) => void) | null,
+    value?: CallbackResult,
+    reason?: unknown,
+  ) => {
     if (completed) {
       return;
     }

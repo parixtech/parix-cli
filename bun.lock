@@ -16,9 +16,6 @@
         "typescript": "^5.9.3",
         "zshy": "^0.7.0",
       },
-      "peerDependencies": {
-        "typescript": "^5",
-      },
     },
   },
   "packages": {
