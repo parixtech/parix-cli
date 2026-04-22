@@ -1,5 +1,5 @@
 {
-  "name": "parix",
+  "name": "@parix/parix",
   "description": "Parix command line interface",
   "type": "module",
   "version": "0.1.0",
@@ -7,6 +7,7 @@
   "files": [
     "dist"
   ],
+  "packageManager": "bun@1.3.12",
   "homepage": "https://github.com/parixtech/parix-cli#readme",
   "bugs": {
     "url": "https://github.com/parixtech/parix-cli/issues"

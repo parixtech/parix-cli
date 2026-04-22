@@ -5,7 +5,7 @@
 ## Install
 
 ```bash
-npm install -g parix
+npm install -g @parix/parix
 parix --help
 ```
 
@@ -104,3 +104,18 @@ bun run publish:npm
 ```
 
 `publish:check` runs linting, type checking, a fresh build, and `npm pack --dry-run` using a repo-local npm cache directory. `publish:npm` publishes the package publicly to npmjs.com using that same local cache.
+
+## GitHub Actions
+
+- `.github/workflows/ci.yml` runs lint, typecheck, build, and `npm pack --dry-run` on pushes and pull requests
+- `.github/workflows/publish.yml` publishes to npm when a GitHub Release is published, using the `NPM_ACCESS_TOKEN` secret
+
+Recommended release flow:
+
+```bash
+# bump version in package.json
+git tag v0.1.1
+git push origin main --tags
+```
+
+Then publish a GitHub Release from tag `v0.1.1`. The publish workflow verifies that the release tag matches `package.json` before publishing to npm.
