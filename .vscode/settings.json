@@ -1,0 +1,12 @@
+{
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
+  "css.lint.unknownAtRules": "ignore",
+  "prettier.enable": false,
+  "oxc.fmt.configPath": ".oxfmtrc.json",
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.oxc": "always",
+    "source.organizeImports": "never"
+  }
+}

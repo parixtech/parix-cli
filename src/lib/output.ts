@@ -9,18 +9,14 @@ export function printKeyValues(entries: Array<[string, string]>) {
   log.message(entries.map(([key, value]) => `${key.padEnd(keyWidth)}  ${value}`).join('\n'));
 }
 
-export function printTable(input: {
-  columns: string[];
-  rows: string[][];
-}) {
-  const widths = input.columns.map((column, index) => Math.max(
-    column.length,
-    ...input.rows.map(row => row[index]?.length ?? 0),
-  ));
+export function printTable(input: { columns: string[]; rows: string[][] }) {
+  const widths = input.columns.map((column, index) =>
+    Math.max(column.length, ...input.rows.map((row) => row[index]?.length ?? 0)),
+  );
 
   const header = input.columns.map((column, index) => column.padEnd(widths[index] ?? 0)).join('  ');
-  const divider = widths.map(width => '-'.repeat(width)).join('  ');
-  const rows = input.rows.map(row => row.map((value, index) => value.padEnd(widths[index] ?? 0)).join('  '));
+  const divider = widths.map((width) => '-'.repeat(width)).join('  ');
+  const rows = input.rows.map((row) => row.map((value, index) => value.padEnd(widths[index] ?? 0)).join('  '));
 
   log.message([header, divider, ...rows].join('\n'));
 }

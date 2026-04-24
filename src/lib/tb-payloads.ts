@@ -31,7 +31,7 @@ export const tbOperationNames = [
   'query_transfers',
 ] as const;
 
-export type TbOperationName = typeof tbOperationNames[number];
+export type TbOperationName = (typeof tbOperationNames)[number];
 
 export interface PayloadOverrideOptions {
   file?: string;
@@ -59,15 +59,17 @@ export function buildCreateAccountsPayload(options: {
   userData32?: string;
   userData64?: string;
 }) {
-  return [omitEmpty({
-    code: requiredValue(options.code, '--code'),
-    flags: flagsBitfield(options.flags),
-    id: options.id ?? randomTbId(),
-    ledger: requiredValue(options.ledger, '--ledger'),
-    user_data_128: options.userData128,
-    user_data_32: options.userData32,
-    user_data_64: options.userData64,
-  })];
+  return [
+    omitEmpty({
+      code: requiredValue(options.code, '--code'),
+      flags: flagsBitfield(options.flags),
+      id: options.id ?? randomTbId(),
+      ledger: requiredValue(options.ledger, '--ledger'),
+      user_data_128: options.userData128,
+      user_data_32: options.userData32,
+      user_data_64: options.userData64,
+    }),
+  ];
 }
 
 export function buildCreateTransfersPayload(options: {
@@ -81,27 +83,23 @@ export function buildCreateTransfersPayload(options: {
   pendingId?: string;
   timeout?: string;
 }) {
-  return [omitEmpty({
-    amount: requiredValue(options.amount, '--amount'),
-    code: requiredValue(options.code, '--code'),
-    credit_account_id: requiredValue(options.creditAccountId, '--to'),
-    debit_account_id: requiredValue(options.debitAccountId, '--from'),
-    flags: flagsBitfield(options.flags),
-    id: options.id ?? randomTbId(),
-    ledger: requiredValue(options.ledger, '--ledger'),
-    pending_id: options.pendingId,
-    timeout: options.timeout,
-  })];
+  return [
+    omitEmpty({
+      amount: requiredValue(options.amount, '--amount'),
+      code: requiredValue(options.code, '--code'),
+      credit_account_id: requiredValue(options.creditAccountId, '--to'),
+      debit_account_id: requiredValue(options.debitAccountId, '--from'),
+      flags: flagsBitfield(options.flags),
+      id: options.id ?? randomTbId(),
+      ledger: requiredValue(options.ledger, '--ledger'),
+      pending_id: options.pendingId,
+      timeout: options.timeout,
+    }),
+  ];
 }
 
-export function buildLookupPayload(options: {
-  id?: string[];
-  ids?: string;
-}) {
-  const ids = [
-    ...(options.id ?? []),
-    ...splitIds(options.ids),
-  ];
+export function buildLookupPayload(options: { id?: string[]; ids?: string }) {
+  const ids = [...(options.id ?? []), ...splitIds(options.ids)];
 
   if (ids.length === 0) {
     throw new Error('Provide at least one `--id` or `--ids` value.');
@@ -193,7 +191,9 @@ function omitEmpty(input: Record<string, string | undefined>) {
 }
 
 function randomTbId() {
-  return BigInt(`0x${crypto.getRandomValues(new Uint8Array(16)).reduce((value, byte) => value + byte.toString(16).padStart(2, '0'), '')}`).toString();
+  return BigInt(
+    `0x${crypto.getRandomValues(new Uint8Array(16)).reduce((value, byte) => value + byte.toString(16).padStart(2, '0'), '')}`,
+  ).toString();
 }
 
 function requiredValue(value: string | undefined, flagName: string) {
@@ -210,6 +210,6 @@ function splitIds(value: string | undefined) {
 
   return value
     .split(SPLIT_IDS_REGEX)
-    .map(item => item.trim())
+    .map((item) => item.trim())
     .filter(Boolean);
 }

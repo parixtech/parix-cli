@@ -33,8 +33,7 @@ export async function readStoredSession(): Promise<StoredSession | null> {
   try {
     const raw = await readFile(SESSION_FILE_PATH, 'utf8');
     return parseStoredSession(JSON.parse(raw));
-  }
-  catch (error) {
+  } catch (error) {
     if (isMissingFileError(error)) {
       return null;
     }
@@ -66,17 +65,17 @@ function parseStoredSession(value: unknown): StoredSession {
   const organization = row.organization as Record<string, unknown> | undefined;
 
   if (
-    row.version !== 2
-    || typeof row.baseUrl !== 'string'
-    || typeof row.accessToken !== 'string'
-    || typeof row.accessTokenExpiresAt !== 'string'
-    || typeof row.createdAt !== 'string'
-    || !Array.isArray(row.scopes)
-    || typeof row.tokenType !== 'string'
-    || typeof row.updatedAt !== 'string'
-    || !user
-    || typeof user.id !== 'string'
-    || !organization
+    row.version !== 2 ||
+    typeof row.baseUrl !== 'string' ||
+    typeof row.accessToken !== 'string' ||
+    typeof row.accessTokenExpiresAt !== 'string' ||
+    typeof row.createdAt !== 'string' ||
+    !Array.isArray(row.scopes) ||
+    typeof row.tokenType !== 'string' ||
+    typeof row.updatedAt !== 'string' ||
+    !user ||
+    typeof user.id !== 'string' ||
+    !organization
   ) {
     throw new Error(`Invalid session data in ${SESSION_FILE_PATH}`);
   }

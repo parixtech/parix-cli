@@ -28,10 +28,25 @@ interface RemoveOptions extends BaseOptions {
 
 interface CreateCatalogResponse {
   catalog: {
-    clusterConfigs: Array<{ description: string | null; id: string; label: string; nodeCount: number }>;
+    clusterConfigs: Array<{
+      description: string | null;
+      id: string;
+      label: string;
+      nodeCount: number;
+    }>;
     clusterSizes: Array<{ id: string; label: string; memoryGb: number; vcpu: number }>;
-    providers: Array<{ id: string; label: string; regions: Array<{ code: string; id: string; label: string }>; slug: string }>;
-    storageTiers: Array<{ description: string | null; id: string; label: string; priceMultiplier: number }>;
+    providers: Array<{
+      id: string;
+      label: string;
+      regions: Array<{ code: string; id: string; label: string }>;
+      slug: string;
+    }>;
+    storageTiers: Array<{
+      description: string | null;
+      id: string;
+      label: string;
+      priceMultiplier: number;
+    }>;
   };
   ok: true;
 }
@@ -140,18 +155,20 @@ interface RemoveResponse {
 export function createDbCommand() {
   const db = new Command('db')
     .description('Manage Parix databases')
-    .addHelpText('after', [
-      '',
-      'Examples:',
-      '  parix db catalog --base-url http://localhost:5173',
-      '  parix db create demo-ledger --provider gcp --region asia-southeast1',
-      '  parix db list',
-      '  parix db info id-123',
-      '  parix db remove id-123 --yes',
-    ].join('\n'));
+    .addHelpText(
+      'after',
+      [
+        '',
+        'Examples:',
+        '  parix db catalog --base-url http://localhost:5173',
+        '  parix db create demo-ledger --provider gcp --region asia-southeast1',
+        '  parix db list',
+        '  parix db info id-123',
+        '  parix db remove id-123 --yes',
+      ].join('\n'),
+    );
 
-  db
-    .command('catalog')
+  db.command('catalog')
     .description('Show database creation catalog options')
     .option('-b, --base-url <url>', 'Parix base URL')
     .option('--json', 'Print raw JSON')
@@ -168,34 +185,26 @@ export function createDbCommand() {
 
       printTable({
         columns: ['Provider', 'Regions'],
-        rows: response.catalog.providers.map(provider => [
+        rows: response.catalog.providers.map((provider) => [
           provider.slug,
-          provider.regions.map(region => region.code).join(', '),
+          provider.regions.map((region) => region.code).join(', '),
         ]),
       });
       note('Use `--provider <slug>` and `--region <code>` from this table.', 'Providers');
 
       printTable({
         columns: ['Config ID', 'Label', 'Nodes'],
-        rows: response.catalog.clusterConfigs.map(config => [
-          config.id,
-          config.label,
-          String(config.nodeCount),
-        ]),
+        rows: response.catalog.clusterConfigs.map((config) => [config.id, config.label, String(config.nodeCount)]),
       });
 
       printTable({
         columns: ['Storage ID', 'Label', 'Multiplier'],
-        rows: response.catalog.storageTiers.map(tier => [
-          tier.id,
-          tier.label,
-          `${tier.priceMultiplier}x`,
-        ]),
+        rows: response.catalog.storageTiers.map((tier) => [tier.id, tier.label, `${tier.priceMultiplier}x`]),
       });
 
       printTable({
         columns: ['Size ID', 'Label', 'vCPU', 'Memory GB'],
-        rows: response.catalog.clusterSizes.map(size => [
+        rows: response.catalog.clusterSizes.map((size) => [
           size.id,
           size.label,
           String(size.vcpu),
@@ -205,8 +214,7 @@ export function createDbCommand() {
       outro('Done');
     });
 
-  db
-    .command('create')
+  db.command('create')
     .description('Create a new database')
     .argument('<database>', 'Database name')
     .option('-b, --base-url <url>', 'Parix base URL')
@@ -217,15 +225,21 @@ export function createDbCommand() {
     .option('--cluster-size-id <id>', 'Cluster size id')
     .option('--storage-gb <n>', 'Storage size in GB')
     .option('--json', 'Print raw JSON')
-    .addHelpText('after', [
-      '',
-      'Examples:',
-      '  parix db create payments-ledger --provider gcp --region asia-southeast1',
-      '  parix db create payments-ledger --provider aws --region ap-southeast-1 --cluster-config-id config-single --cluster-size-id size-hx-5',
-    ].join('\n'))
+    .addHelpText(
+      'after',
+      [
+        '',
+        'Examples:',
+        '  parix db create payments-ledger --provider gcp --region asia-southeast1',
+        '  parix db create payments-ledger --provider aws --region ap-southeast-1 --cluster-config-id config-single --cluster-size-id size-hx-5',
+      ].join('\n'),
+    )
     .action(async (databaseName: string, options: CreateOptions) => {
       const parsedStorageGb = options.storageGb ? Number.parseInt(options.storageGb, 10) : null;
-      if (options.storageGb && (typeof parsedStorageGb !== 'number' || !Number.isInteger(parsedStorageGb) || parsedStorageGb <= 0)) {
+      if (
+        options.storageGb &&
+        (typeof parsedStorageGb !== 'number' || !Number.isInteger(parsedStorageGb) || parsedStorageGb <= 0)
+      ) {
         throw new Error('--storage-gb must be a positive integer.');
       }
 
@@ -253,10 +267,13 @@ export function createDbCommand() {
       }
 
       if (!response.success) {
-        note([
-          `Billing: ${response.billing?.message ?? response.message}`,
-          `Checkout URL: ${response.billing?.checkoutUrl ?? '-'}`,
-        ].join('\n'), 'Provisioning blocked');
+        note(
+          [
+            `Billing: ${response.billing?.message ?? response.message}`,
+            `Checkout URL: ${response.billing?.checkoutUrl ?? '-'}`,
+          ].join('\n'),
+          'Provisioning blocked',
+        );
         outro(response.message);
         return;
       }
@@ -270,28 +287,24 @@ export function createDbCommand() {
         ['Workflow ID', response.job?.workflowId ?? '-'],
       ]);
       if (response.provisioning) {
-        note([
-          `Status: ${response.provisioning.status}`,
-          `Message: ${response.provisioning.message ?? '-'}`,
-        ].join('\n'), 'Provisioning');
+        note(
+          [`Status: ${response.provisioning.status}`, `Message: ${response.provisioning.message ?? '-'}`].join('\n'),
+          'Provisioning',
+        );
       }
       outro(response.message);
     });
 
-  db
-    .command('list')
+  db.command('list')
     .description('List databases in the active organization')
     .option('-b, --base-url <url>', 'Parix base URL')
     .option('--search <text>', 'Filter database names')
     .option('--limit <n>', 'Maximum number of rows to return')
     .option('--json', 'Print raw JSON')
-    .addHelpText('after', [
-      '',
-      'Examples:',
-      '  parix db list',
-      '  parix db list --search payments',
-      '  parix db list --json',
-    ].join('\n'))
+    .addHelpText(
+      'after',
+      ['', 'Examples:', '  parix db list', '  parix db list --search payments', '  parix db list --json'].join('\n'),
+    )
     .action(async (options: ListOptions) => {
       const query = new URLSearchParams();
       if (options.search) {
@@ -319,7 +332,7 @@ export function createDbCommand() {
 
       printTable({
         columns: ['ID', 'Name', 'Region', 'Provider', 'Status', 'Updated'],
-        rows: response.databases.map(database => [
+        rows: response.databases.map((database) => [
           database.id,
           database.name,
           database.region ?? '-',
@@ -332,18 +345,12 @@ export function createDbCommand() {
       outro('Done');
     });
 
-  db
-    .command('info')
+  db.command('info')
     .description('Show database details')
     .argument('<database-id>', 'Database id')
     .option('-b, --base-url <url>', 'Parix base URL')
     .option('--json', 'Print raw JSON')
-    .addHelpText('after', [
-      '',
-      'Examples:',
-      '  parix db info db_123',
-      '  parix db info db_123 --json',
-    ].join('\n'))
+    .addHelpText('after', ['', 'Examples:', '  parix db info db_123', '  parix db info db_123 --json'].join('\n'))
     .action(async (databaseId: string, options: BaseOptions) => {
       const response = await requestApiJson<DatabaseInfoResponse>({
         baseUrl: options.baseUrl,
@@ -371,39 +378,42 @@ export function createDbCommand() {
       ]);
 
       if (response.metricsSummary) {
-        note([
-          `CPU: ${response.metricsSummary.cpuUsagePct ?? '-'}%`,
-          `Memory: ${response.metricsSummary.memoryUsagePct ?? '-'}%`,
-          `Disk: ${response.metricsSummary.diskUsagePct ?? '-'}%`,
-          `Gateway P95: ${response.metricsSummary.gatewayP95LatencyMs ?? '-'}ms`,
-          `Last collected: ${response.metricsSummary.lastCollectedAt ?? '-'}`,
-        ].join('\n'), 'Metrics');
+        note(
+          [
+            `CPU: ${response.metricsSummary.cpuUsagePct ?? '-'}%`,
+            `Memory: ${response.metricsSummary.memoryUsagePct ?? '-'}%`,
+            `Disk: ${response.metricsSummary.diskUsagePct ?? '-'}%`,
+            `Gateway P95: ${response.metricsSummary.gatewayP95LatencyMs ?? '-'}ms`,
+            `Last collected: ${response.metricsSummary.lastCollectedAt ?? '-'}`,
+          ].join('\n'),
+          'Metrics',
+        );
       }
 
       if (response.latestProvisionJob) {
-        note([
-          `Provision job: ${response.latestProvisionJob.id}`,
-          `Provision status: ${response.latestProvisionJob.status}`,
-          `Workflow ID: ${response.latestProvisionJob.workflowId ?? '-'}`,
-        ].join('\n'), 'Latest provision job');
+        note(
+          [
+            `Provision job: ${response.latestProvisionJob.id}`,
+            `Provision status: ${response.latestProvisionJob.status}`,
+            `Workflow ID: ${response.latestProvisionJob.workflowId ?? '-'}`,
+          ].join('\n'),
+          'Latest provision job',
+        );
       }
 
       outro('Done');
     });
 
-  db
-    .command('remove')
+  db.command('remove')
     .description('Queue database deletion')
     .argument('<database-id>', 'Database id')
     .option('-b, --base-url <url>', 'Parix base URL')
     .option('--json', 'Print raw JSON')
     .option('-y, --yes', 'Skip confirmation prompt')
-    .addHelpText('after', [
-      '',
-      'Examples:',
-      '  parix db remove db_123',
-      '  parix db remove db_123 --yes --json',
-    ].join('\n'))
+    .addHelpText(
+      'after',
+      ['', 'Examples:', '  parix db remove db_123', '  parix db remove db_123 --yes --json'].join('\n'),
+    )
     .action(async (databaseId: string, options: RemoveOptions) => {
       if (!options.yes) {
         const confirmed = await confirm({

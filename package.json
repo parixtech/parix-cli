@@ -29,12 +29,14 @@
   "scripts": {
     "build": "zshy",
     "build:link": "zshy && bun link",
+    "fmt": "oxfmt --write src package.json tsconfig.json .oxlintrc.json .oxfmtrc.json commitlint.config.js",
+    "fmt:check": "oxfmt --check src package.json tsconfig.json .oxlintrc.json .oxfmtrc.json commitlint.config.js",
     "lint": "oxlint src",
     "lint:fix": "oxlint --fix src",
     "typecheck": "tsc --noEmit",
     "cli": "node ./dist/cli.cjs",
     "pack:dry-run": "npm pack --dry-run --cache .npm-cache",
-    "publish:check": "bun run lint && bun run typecheck && bun run build && npm run pack:dry-run",
+    "publish:check": "bun run fmt:check && bun run lint && bun run typecheck && bun run build && bun run pack:dry-run",
     "prepublishOnly": "bun run publish:check",
     "publish:npm": "npm publish --access public --cache .npm-cache",
     "prepare": "husky"
@@ -51,11 +53,15 @@
     "@types/node": "^25.3.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
+    "oxfmt": "^0.46.0",
     "oxlint": "^1.61.0",
     "typescript": "^5.9.3",
     "zshy": "^0.7.0"
   },
   "lint-staged": {
+    "*.{js,ts,json}": [
+      "oxfmt --write"
+    ],
     "*.{js,ts}": [
       "oxlint --fix src"
     ]

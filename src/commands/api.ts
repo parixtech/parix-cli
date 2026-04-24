@@ -54,19 +54,14 @@ async function handleApiRequest(requestPath: string, options: ApiRequestOptions)
   const contentType = response.headers.get('content-type') ?? 'unknown';
   const payload = await response.text();
 
-  note([
-    `Status: ${response.status} ${response.statusText}`,
-    `Content-Type: ${contentType}`,
-  ].join('\n'), 'Response');
+  note([`Status: ${response.status} ${response.statusText}`, `Content-Type: ${contentType}`].join('\n'), 'Response');
 
   if (contentType.includes('application/json') && payload.length > 0) {
     try {
       log.message(JSON.stringify(JSON.parse(payload), null, 2));
       outro('Request completed');
       return;
-    }
-    catch {
-    }
+    } catch {}
   }
 
   if (payload.length > 0) {

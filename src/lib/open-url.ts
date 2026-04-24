@@ -15,8 +15,7 @@ export async function openUrlInBrowser(url: string) {
     });
     child.unref();
     return true;
-  }
-  catch {
+  } catch {
     return false;
   }
 }

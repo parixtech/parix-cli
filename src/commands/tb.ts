@@ -89,15 +89,18 @@ interface TbResponse {
 export function createTbCommand() {
   const tb = new Command('tb')
     .description('Run TigerBeetle operations against a database')
-    .addHelpText('after', [
-      '',
-      'Examples:',
-      '  parix tb create-accounts db_123 --id 1000 --ledger 1 --code 1',
-      '  parix tb create-transfers db_123 --id 2000 --from 1000 --to 1001 --amount 1 --ledger 1 --code 1',
-      '  parix tb lookup-accounts db_123 --id 1000 --id 1001',
-      '  parix tb query-transfers db_123 --limit 10 --json',
-      '  parix tb create-transfers db_123 --file ./transfer.json',
-    ].join('\n'));
+    .addHelpText(
+      'after',
+      [
+        '',
+        'Examples:',
+        '  parix tb create-accounts db_123 --id 1000 --ledger 1 --code 1',
+        '  parix tb create-transfers db_123 --id 2000 --from 1000 --to 1001 --amount 1 --ledger 1 --code 1',
+        '  parix tb lookup-accounts db_123 --id 1000 --id 1001',
+        '  parix tb query-transfers db_123 --limit 10 --json',
+        '  parix tb create-transfers db_123 --file ./transfer.json',
+      ].join('\n'),
+    );
 
   addCreateAccountsCommand(tb);
   addCreateTransfersCommand(tb);
@@ -127,22 +130,27 @@ function addCreateAccountsCommand(parent: Command) {
     .option('--user-data-128 <value>', 'user_data_128')
     .option('--user-data-64 <value>', 'user_data_64')
     .option('--user-data-32 <value>', 'user_data_32')
-    .addHelpText('after', [
-      '',
-      'Examples:',
-      '  parix tb create-accounts db_123 --id 1000 --ledger 1 --code 1',
-      '  parix tb create-accounts db_123 --payload "[{\"id\":\"1000\",\"ledger\":\"1\",\"code\":\"1\",\"flags\":\"0\"}]"',
-    ].join('\n'))
+    .addHelpText(
+      'after',
+      [
+        '',
+        'Examples:',
+        '  parix tb create-accounts db_123 --id 1000 --ledger 1 --code 1',
+        '  parix tb create-accounts db_123 --payload "[{\"id\":\"1000\",\"ledger\":\"1\",\"code\":\"1\",\"flags\":\"0\"}]"',
+      ].join('\n'),
+    )
     .action(async (databaseId: string, options: CreateAccountsOptions) => {
-      const payload = await resolveTbPayload(options, () => buildCreateAccountsPayload({
-        code: options.code,
-        flags: options.flag,
-        id: options.id,
-        ledger: options.ledger,
-        userData128: options.userData128,
-        userData32: options.userData32,
-        userData64: options.userData64,
-      }));
+      const payload = await resolveTbPayload(options, () =>
+        buildCreateAccountsPayload({
+          code: options.code,
+          flags: options.flag,
+          id: options.id,
+          ledger: options.ledger,
+          userData128: options.userData128,
+          userData32: options.userData32,
+          userData64: options.userData64,
+        }),
+      );
       await executeTbOperation(databaseId, 'create_accounts', payload, options);
     });
 }
@@ -165,24 +173,29 @@ function addCreateTransfersCommand(parent: Command) {
     .option('--flag <flag>', 'Transfer flag name or bitfield value', collectValues, [])
     .option('--pending-id <id>', 'Pending transfer id')
     .option('--timeout <ms>', 'Timeout value')
-    .addHelpText('after', [
-      '',
-      'Examples:',
-      '  parix tb create-transfers db_123 --id 2000 --from 1000 --to 1001 --amount 1 --ledger 1 --code 1',
-      '  parix tb create-transfers db_123 --file ./transfer.json',
-    ].join('\n'))
+    .addHelpText(
+      'after',
+      [
+        '',
+        'Examples:',
+        '  parix tb create-transfers db_123 --id 2000 --from 1000 --to 1001 --amount 1 --ledger 1 --code 1',
+        '  parix tb create-transfers db_123 --file ./transfer.json',
+      ].join('\n'),
+    )
     .action(async (databaseId: string, options: CreateTransfersOptions) => {
-      const payload = await resolveTbPayload(options, () => buildCreateTransfersPayload({
-        amount: options.amount,
-        code: options.code,
-        creditAccountId: options.to,
-        debitAccountId: options.from,
-        flags: options.flag,
-        id: options.id,
-        ledger: options.ledger,
-        pendingId: options.pendingId,
-        timeout: options.timeout,
-      }));
+      const payload = await resolveTbPayload(options, () =>
+        buildCreateTransfersPayload({
+          amount: options.amount,
+          code: options.code,
+          creditAccountId: options.to,
+          debitAccountId: options.from,
+          flags: options.flag,
+          id: options.id,
+          ledger: options.ledger,
+          pendingId: options.pendingId,
+          timeout: options.timeout,
+        }),
+      );
       await executeTbOperation(databaseId, 'create_transfers', payload, options);
     });
 }
@@ -198,17 +211,22 @@ function addLookupCommand(parent: Command, name: string, operation: TbOperationN
     .option('--file <path>', 'Read JSON payload from file')
     .option('--id <id>', 'ID to lookup', collectValues, [])
     .option('--ids <ids>', 'Comma-separated IDs to lookup')
-    .addHelpText('after', [
-      '',
-      'Examples:',
-      `  parix tb ${name} db_123 --id 1000 --id 1001`,
-      `  parix tb ${name} db_123 --ids 1000,1001`,
-    ].join('\n'))
+    .addHelpText(
+      'after',
+      [
+        '',
+        'Examples:',
+        `  parix tb ${name} db_123 --id 1000 --id 1001`,
+        `  parix tb ${name} db_123 --ids 1000,1001`,
+      ].join('\n'),
+    )
     .action(async (databaseId: string, options: LookupOptions) => {
-      const payload = await resolveTbPayload(options, () => buildLookupPayload({
-        id: options.id,
-        ids: options.ids,
-      }));
+      const payload = await resolveTbPayload(options, () =>
+        buildLookupPayload({
+          id: options.id,
+          ids: options.ids,
+        }),
+      );
       await executeTbOperation(databaseId, operation, payload, options);
     });
 }
@@ -231,24 +249,29 @@ function addAccountFilterCommand(parent: Command, name: string, operation: TbOpe
     .option('--user-data-64 <value>', 'user_data_64')
     .option('--user-data-32 <value>', 'user_data_32')
     .option('--code <code>', 'Filter code')
-    .addHelpText('after', [
-      '',
-      'Examples:',
-      `  parix tb ${name} db_123 --account-id 1000 --limit 10 --flag debits`,
-      `  parix tb ${name} db_123 --file ./filter.json`,
-    ].join('\n'))
+    .addHelpText(
+      'after',
+      [
+        '',
+        'Examples:',
+        `  parix tb ${name} db_123 --account-id 1000 --limit 10 --flag debits`,
+        `  parix tb ${name} db_123 --file ./filter.json`,
+      ].join('\n'),
+    )
     .action(async (databaseId: string, options: FilterOptions) => {
-      const payload = await resolveTbPayload(options, () => buildAccountFilterPayload({
-        accountId: options.accountId,
-        code: options.code,
-        flags: options.flag,
-        limit: options.limit,
-        timestampMax: options.timestampMax,
-        timestampMin: options.timestampMin,
-        userData128: options.userData128,
-        userData32: options.userData32,
-        userData64: options.userData64,
-      }));
+      const payload = await resolveTbPayload(options, () =>
+        buildAccountFilterPayload({
+          accountId: options.accountId,
+          code: options.code,
+          flags: options.flag,
+          limit: options.limit,
+          timestampMax: options.timestampMax,
+          timestampMin: options.timestampMin,
+          userData128: options.userData128,
+          userData32: options.userData32,
+          userData64: options.userData64,
+        }),
+      );
       await executeTbOperation(databaseId, operation, payload, options);
     });
 }
@@ -271,29 +294,39 @@ function addQueryCommand(parent: Command, name: string, operation: TbOperationNa
     .option('--user-data-128 <value>', 'user_data_128')
     .option('--user-data-64 <value>', 'user_data_64')
     .option('--user-data-32 <value>', 'user_data_32')
-    .addHelpText('after', [
-      '',
-      'Examples:',
-      `  parix tb ${name} db_123 --limit 10`,
-      `  parix tb ${name} db_123 --ledger 1 --limit 10 --json`,
-    ].join('\n'))
+    .addHelpText(
+      'after',
+      [
+        '',
+        'Examples:',
+        `  parix tb ${name} db_123 --limit 10`,
+        `  parix tb ${name} db_123 --ledger 1 --limit 10 --json`,
+      ].join('\n'),
+    )
     .action(async (databaseId: string, options: QueryOptions) => {
-      const payload = await resolveTbPayload(options, () => buildQueryPayload({
-        code: options.code,
-        flags: options.flag,
-        ledger: options.ledger,
-        limit: options.limit,
-        timestampMax: options.timestampMax,
-        timestampMin: options.timestampMin,
-        userData128: options.userData128,
-        userData32: options.userData32,
-        userData64: options.userData64,
-      }));
+      const payload = await resolveTbPayload(options, () =>
+        buildQueryPayload({
+          code: options.code,
+          flags: options.flag,
+          ledger: options.ledger,
+          limit: options.limit,
+          timestampMax: options.timestampMax,
+          timestampMin: options.timestampMin,
+          userData128: options.userData128,
+          userData32: options.userData32,
+          userData64: options.userData64,
+        }),
+      );
       await executeTbOperation(databaseId, operation, payload, options);
     });
 }
 
-async function executeTbOperation(databaseId: string, operation: TbOperationName, payload: unknown, options: BaseTbOptions) {
+async function executeTbOperation(
+  databaseId: string,
+  operation: TbOperationName,
+  payload: unknown,
+  options: BaseTbOptions,
+) {
   const response = await requestApiJson<TbResponse>({
     baseUrl: options.baseUrl,
     body: JSON.stringify(payload),
@@ -310,16 +343,19 @@ async function executeTbOperation(databaseId: string, operation: TbOperationName
   }
 
   note(response.docsUrl, 'TigerBeetle docs');
-  note([
-    `Operation: ${response.operationLabel}`,
-    `Database: ${response.databaseName}`,
-    `Provider: ${response.provider}`,
-    `Cluster ID: ${response.clusterId}`,
-    `Target host: ${response.targetHost}`,
-    `Replicas: ${String(response.replicaCount)}`,
-    `Mode: ${response.mode}`,
-    `Persisted: ${String(response.persisted)}`,
-  ].join('\n'), 'Execution');
+  note(
+    [
+      `Operation: ${response.operationLabel}`,
+      `Database: ${response.databaseName}`,
+      `Provider: ${response.provider}`,
+      `Cluster ID: ${response.clusterId}`,
+      `Target host: ${response.targetHost}`,
+      `Replicas: ${String(response.replicaCount)}`,
+      `Mode: ${response.mode}`,
+      `Persisted: ${String(response.persisted)}`,
+    ].join('\n'),
+    'Execution',
+  );
 
   if (Array.isArray(response.responsePayload)) {
     note(String(response.responsePayload.length), 'Rows returned');

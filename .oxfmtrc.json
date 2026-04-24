@@ -1,0 +1,10 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "useTabs": false,
+  "singleQuote": true,
+  "jsxSingleQuote": true,
+  "semi": true,
+  "printWidth": 120,
+  "sortPackageJson": false,
+  "ignorePatterns": ["**/node_modules", "**/dist", "**/build", "**/public", "**/coverage", "**/.cx_cache"]
+}

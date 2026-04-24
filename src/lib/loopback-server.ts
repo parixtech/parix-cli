@@ -112,7 +112,7 @@ export async function startLoopbackServer(options: StartLoopbackServerOptions): 
     if (options.successPage) {
       response.writeHead(302, {
         'cache-control': 'no-store',
-        'location': options.successPage.redirectUrl,
+        location: options.successPage.redirectUrl,
       });
       response.end();
       settle(resolveResult, { code });
@@ -202,5 +202,5 @@ function escapeHtml(value: string) {
     .replaceAll('<', '&lt;')
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
-    .replaceAll('\'', '&#39;');
+    .replaceAll("'", '&#39;');
 }

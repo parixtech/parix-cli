@@ -23,9 +23,7 @@ export interface PkcePair {
 
 export function createPkcePair(): PkcePair {
   const codeVerifier = randomBytes(32).toString('base64url');
-  const codeChallenge = createHash('sha256')
-    .update(codeVerifier)
-    .digest('base64url');
+  const codeChallenge = createHash('sha256').update(codeVerifier).digest('base64url');
 
   return {
     codeChallenge,
@@ -33,12 +31,7 @@ export function createPkcePair(): PkcePair {
   };
 }
 
-export function buildAuthorizeUrl(input: {
-  baseUrl: string;
-  codeChallenge: string;
-  prompt?: string;
-  state: string;
-}) {
+export function buildAuthorizeUrl(input: { baseUrl: string; codeChallenge: string; prompt?: string; state: string }) {
   const url = new URL('/api/oauth/cli/authorize', trimTrailingSlash(input.baseUrl));
   url.searchParams.set('state', input.state);
   url.searchParams.set('code_challenge', input.codeChallenge);
@@ -52,10 +45,13 @@ export function buildAuthorizeUrl(input: {
 }
 
 export function buildCliState(redirectUri: string) {
-  return Buffer.from(JSON.stringify({
-    nonce: randomBytes(16).toString('hex'),
-    redirectUri,
-  }), 'utf8').toString('base64url');
+  return Buffer.from(
+    JSON.stringify({
+      nonce: randomBytes(16).toString('hex'),
+      redirectUri,
+    }),
+    'utf8',
+  ).toString('base64url');
 }
 
 export function buildOAuthCallbackUrl(baseUrl: string) {

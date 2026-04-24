@@ -36,6 +36,3 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
 # cx
 .cx_cache
-
-# IDE
-.vscode

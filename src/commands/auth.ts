@@ -88,7 +88,10 @@ async function handleLogin(options: LoginOptions) {
     prepareSpinner.stop('Browser sign-in ready');
 
     const opened = await openUrlInBrowser(browserUrl);
-    note(opened ? browserUrl : `Open this URL manually:\n${browserUrl}`, opened ? 'Opened browser URL' : 'Manual browser URL');
+    note(
+      opened ? browserUrl : `Open this URL manually:\n${browserUrl}`,
+      opened ? 'Opened browser URL' : 'Manual browser URL',
+    );
 
     const waitSpinner = spinner();
     waitSpinner.start('Waiting for browser callback');
@@ -111,8 +114,7 @@ async function handleLogin(options: LoginOptions) {
 
     note(SESSION_FILE_PATH, 'Stored session file');
     outro(`Signed in as ${formatUserLabel(nextSession.user)}`);
-  }
-  finally {
+  } finally {
     await loopbackServer.close().catch(() => {});
   }
 }
@@ -130,28 +132,32 @@ async function handleStatus(options: StatusOptions) {
   const baseUrl = resolveBaseUrl(options.baseUrl, storedSession);
 
   try {
-    const refreshedSession = await hydrateStoredSessionOrganization(await ensureFreshSession({
-      ...storedSession,
-      baseUrl,
-    }));
+    const refreshedSession = await hydrateStoredSessionOrganization(
+      await ensureFreshSession({
+        ...storedSession,
+        baseUrl,
+      }),
+    );
     const userInfo = await fetchOAuthUserInfo({
       accessToken: refreshedSession.accessToken,
       baseUrl,
     });
 
-    note([
-      `User: ${userInfo.email ?? formatUserLabel(refreshedSession.user)}`,
-      `Base URL: ${baseUrl}`,
-      `Expires: ${refreshedSession.accessTokenExpiresAt}`,
-      `Scopes: ${refreshedSession.scopes.join(', ')}`,
-      `Organization: ${refreshedSession.organization.name ?? 'none'}`,
-      `Organization slug: ${refreshedSession.organization.slug ?? 'none'}`,
-      `Member role: ${refreshedSession.organization.memberRole ?? 'none'}`,
-      `Session file: ${SESSION_FILE_PATH}`,
-    ].join('\n'), 'Authenticated session');
+    note(
+      [
+        `User: ${userInfo.email ?? formatUserLabel(refreshedSession.user)}`,
+        `Base URL: ${baseUrl}`,
+        `Expires: ${refreshedSession.accessTokenExpiresAt}`,
+        `Scopes: ${refreshedSession.scopes.join(', ')}`,
+        `Organization: ${refreshedSession.organization.name ?? 'none'}`,
+        `Organization slug: ${refreshedSession.organization.slug ?? 'none'}`,
+        `Member role: ${refreshedSession.organization.memberRole ?? 'none'}`,
+        `Session file: ${SESSION_FILE_PATH}`,
+      ].join('\n'),
+      'Authenticated session',
+    );
     outro('Session is valid');
-  }
-  catch (error) {
+  } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     log.warn(`Stored session is invalid: ${message}`);
     process.exitCode = 1;

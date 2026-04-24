@@ -48,8 +48,7 @@ export async function requestApiJson<T>(input: {
 function safeParseJson(value: string) {
   try {
     return JSON.parse(value) as unknown;
-  }
-  catch {
+  } catch {
     return value;
   }
 }

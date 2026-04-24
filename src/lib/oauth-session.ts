@@ -5,11 +5,7 @@ import { writeStoredSession } from './session';
 
 const REFRESH_BUFFER_MS = 60_000;
 
-export async function createStoredSession(input: {
-  baseUrl: string;
-  createdAt?: string;
-  tokenSet: OAuthTokenSet;
-}) {
+export async function createStoredSession(input: { baseUrl: string; createdAt?: string; tokenSet: OAuthTokenSet }) {
   const now = new Date();
   const [userInfo, resolvedOrganization] = await Promise.all([
     fetchOAuthUserInfo({
@@ -96,10 +92,7 @@ function shouldRefresh(session: StoredSession) {
   return Number.isNaN(expiresAt) || expiresAt <= Date.now() + REFRESH_BUFFER_MS;
 }
 
-async function fetchResolvedSessionOrganization(input: {
-  accessToken: string;
-  baseUrl: string;
-}) {
+async function fetchResolvedSessionOrganization(input: { accessToken: string; baseUrl: string }) {
   const response = await fetch(new URL('/api/v1/session', input.baseUrl), {
     headers: {
       authorization: `Bearer ${input.accessToken}`,
@@ -109,7 +102,7 @@ async function fetchResolvedSessionOrganization(input: {
     throw new Error('Unable to resolve the authenticated organization.');
   }
 
-  const payload = await response.json() as {
+  const payload = (await response.json()) as {
     auth?: {
       organization?: {
         id?: unknown;
@@ -133,8 +126,7 @@ async function fetchResolvedSessionOrganization(input: {
 }
 
 function organizationsEqual(left: StoredSession['organization'], right: StoredSession['organization']) {
-  return left.id === right.id
-    && left.memberRole === right.memberRole
-    && left.name === right.name
-    && left.slug === right.slug;
+  return (
+    left.id === right.id && left.memberRole === right.memberRole && left.name === right.name && left.slug === right.slug
+  );
 }
