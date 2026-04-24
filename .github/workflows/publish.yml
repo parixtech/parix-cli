@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     concurrency: npm-publish
     permissions:
-      contents: read
+      contents: write
       id-token: write
 
     steps:
@@ -56,10 +56,27 @@ jobs:
       - name: Build
         run: bun run build
 
-      - name: Pack dry run
-        run: npm pack --dry-run
+      - name: Pack release artifact
+        id: pack
+        run: |
+          npm pack --json > npm-pack.json
+          node <<'EOF' >> "$GITHUB_OUTPUT"
+          const fs = require('node:fs');
+          const [packed] = JSON.parse(fs.readFileSync('npm-pack.json', 'utf8'));
+          if (!packed?.filename) {
+            console.error('npm pack did not report a tarball filename.');
+            process.exit(1);
+          }
+          console.log(`tarball=${packed.filename}`);
+          EOF
 
       - name: Publish to npm
-        run: npm publish --provenance --access public
+        run: npm publish "${{ steps.pack.outputs.tarball }}" --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+
+      - name: Upload GitHub Release artifact
+        if: github.event_name == 'release'
+        run: gh release upload "$GITHUB_REF_NAME" "${{ steps.pack.outputs.tarball }}" --clobber
+        env:
+          GH_TOKEN: ${{ github.token }}

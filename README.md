@@ -108,7 +108,7 @@ bun run publish:npm
 ## GitHub Actions
 
 - `.github/workflows/ci.yml` runs lint, typecheck, build, and `npm pack --dry-run` on pushes and pull requests
-- `.github/workflows/publish.yml` publishes to npm when a GitHub Release is published, using the `NPM_ACCESS_TOKEN` secret
+- `.github/workflows/publish.yml` publishes to npm when a GitHub Release is published, using the `NPM_ACCESS_TOKEN` secret, and uploads the published npm tarball to the GitHub Release
 
 Recommended release flow:
 
@@ -118,4 +118,4 @@ git tag v0.1.1
 git push origin main --tags
 ```
 
-Then publish a GitHub Release from tag `v0.1.1`. The publish workflow verifies that the release tag matches `package.json` before publishing to npm.
+Then publish a GitHub Release from tag `v0.1.1`. The publish workflow verifies that the release tag matches `package.json`, packs the npm tarball, publishes that tarball to npm, and uploads the same `.tgz` as a GitHub Release asset.
