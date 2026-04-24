@@ -15,7 +15,7 @@ Use `bun` for package commands.
 - `bun install`: install dependencies.
 - `bun run build`: compile the CLI with `zshy` into `dist/`.
 - `bun run build:link`: build and `bun link` the package for local shell testing.
-- `bun run lint`: run ESLint on `src/`.
+- `bun run lint`: run Oxlint on `src/`.
 - `bun run lint:fix`: apply safe lint fixes.
 - `bun run typecheck`: run TypeScript without emitting files.
 - `bun run cli -- auth status --base-url http://localhost:5173`: run the built CLI against a local app.

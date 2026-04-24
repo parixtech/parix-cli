@@ -40,7 +40,7 @@ export async function readStoredSession(): Promise<StoredSession | null> {
     }
 
     if (error instanceof SyntaxError) {
-      throw new Error(`Failed to parse ${SESSION_FILE_PATH}`);
+      throw new TypeError(`Failed to parse ${SESSION_FILE_PATH}`);
     }
 
     throw error;

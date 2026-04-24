@@ -29,14 +29,15 @@
   "scripts": {
     "build": "zshy",
     "build:link": "zshy && bun link",
-    "lint": "eslint ./src",
-    "lint:fix": "eslint --fix ./src",
+    "lint": "oxlint src",
+    "lint:fix": "oxlint --fix src",
     "typecheck": "tsc --noEmit",
     "cli": "node ./dist/cli.cjs",
     "pack:dry-run": "npm pack --dry-run --cache .npm-cache",
     "publish:check": "bun run lint && bun run typecheck && bun run build && npm run pack:dry-run",
     "prepublishOnly": "bun run publish:check",
-    "publish:npm": "npm publish --access public --cache .npm-cache"
+    "publish:npm": "npm publish --access public --cache .npm-cache",
+    "prepare": "husky"
   },
   "zshy": {
     "bin": "./src/cli.ts"
@@ -46,16 +47,17 @@
     "commander": "^14.0.3"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^7.7.3",
-    "@eslint-react/eslint-plugin": "^4.2.3",
+    "@commitlint/config-conventional": "^20.5.0",
     "@types/node": "^25.3.0",
-    "eslint": "^10.1.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "oxlint": "^1.61.0",
     "typescript": "^5.9.3",
     "zshy": "^0.7.0"
   },
   "lint-staged": {
     "*.{js,ts}": [
-      "eslint --fix ./src"
+      "oxlint --fix src"
     ]
   }
 }

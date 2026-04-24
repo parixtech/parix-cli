@@ -1,6 +1,6 @@
 # parix
 
-`parix` is the Hypertransactions command line interface.
+`parix` is the Parix command line interface.
 
 ## Install
 
@@ -36,7 +36,7 @@ Current commands:
 - Opens the browser authorization flow with PKCE
 - Forces the Better Auth consent screen on every `parix auth login`
 - Receives an authorization code through the local callback
-- Redirects the browser to the Hypertransactions success page at `/cli-oauth-consent-granted`
+- Redirects the browser to the Parix success page at `/cli-oauth-consent-granted`
 - Exchanges the code for access and refresh tokens
 - Stores the local session at `~/.config/parix/session.json`
 

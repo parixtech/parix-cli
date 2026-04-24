@@ -27,12 +27,12 @@ interface StatusOptions {
 }
 
 export function createAuthCommand() {
-  const auth = new Command('auth').description('Authenticate with Hypertransactions');
+  const auth = new Command('auth').description('Authenticate with Parix');
 
   auth
     .command('login')
     .description('Sign in with OAuth consent and PKCE')
-    .option('-b, --base-url <url>', 'Hypertransactions base URL')
+    .option('-b, --base-url <url>', 'Parix base URL')
     .option('-p, --port <port>', 'Loopback callback port', parsePortOption)
     .option('--prompt <prompt>', 'OAuth prompt override', DEFAULT_OIDC_PROMPT)
     .action(async (options: LoginOptions) => {
@@ -59,7 +59,7 @@ export function createAuthCommand() {
 }
 
 async function handleLogin(options: LoginOptions) {
-  intro('Hypertransactions sign in');
+  intro('Parix sign in');
 
   const storedSession = await readStoredSession();
   const baseUrl = resolveBaseUrl(options.baseUrl, storedSession);
@@ -118,7 +118,7 @@ async function handleLogin(options: LoginOptions) {
 }
 
 async function handleStatus(options: StatusOptions) {
-  intro('Hypertransactions auth status');
+  intro('Parix auth status');
 
   const storedSession = await readStoredSession();
   if (!storedSession) {

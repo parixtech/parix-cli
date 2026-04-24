@@ -139,7 +139,7 @@ interface RemoveResponse {
 
 export function createDbCommand() {
   const db = new Command('db')
-    .description('Manage Hypertransactions databases')
+    .description('Manage Parix databases')
     .addHelpText('after', [
       '',
       'Examples:',
@@ -153,7 +153,7 @@ export function createDbCommand() {
   db
     .command('catalog')
     .description('Show database creation catalog options')
-    .option('-b, --base-url <url>', 'Hypertransactions base URL')
+    .option('-b, --base-url <url>', 'Parix base URL')
     .option('--json', 'Print raw JSON')
     .action(async (options: BaseOptions) => {
       const response = await requestApiJson<CreateCatalogResponse>({
@@ -209,7 +209,7 @@ export function createDbCommand() {
     .command('create')
     .description('Create a new database')
     .argument('<database>', 'Database name')
-    .option('-b, --base-url <url>', 'Hypertransactions base URL')
+    .option('-b, --base-url <url>', 'Parix base URL')
     .option('--provider <slug>', 'Provider slug (for example: gcp, aws)')
     .option('--region <code>', 'Region code')
     .option('--cluster-config-id <id>', 'Cluster config id')
@@ -281,7 +281,7 @@ export function createDbCommand() {
   db
     .command('list')
     .description('List databases in the active organization')
-    .option('-b, --base-url <url>', 'Hypertransactions base URL')
+    .option('-b, --base-url <url>', 'Parix base URL')
     .option('--search <text>', 'Filter database names')
     .option('--limit <n>', 'Maximum number of rows to return')
     .option('--json', 'Print raw JSON')
@@ -336,7 +336,7 @@ export function createDbCommand() {
     .command('info')
     .description('Show database details')
     .argument('<database-id>', 'Database id')
-    .option('-b, --base-url <url>', 'Hypertransactions base URL')
+    .option('-b, --base-url <url>', 'Parix base URL')
     .option('--json', 'Print raw JSON')
     .addHelpText('after', [
       '',
@@ -395,7 +395,7 @@ export function createDbCommand() {
     .command('remove')
     .description('Queue database deletion')
     .argument('<database-id>', 'Database id')
-    .option('-b, --base-url <url>', 'Hypertransactions base URL')
+    .option('-b, --base-url <url>', 'Parix base URL')
     .option('--json', 'Print raw JSON')
     .option('-y, --yes', 'Skip confirmation prompt')
     .addHelpText('after', [
