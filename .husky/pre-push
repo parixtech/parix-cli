@@ -1,1 +1,2 @@
 bun typecheck
+bun run publish:check
