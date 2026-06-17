@@ -2,16 +2,21 @@
 
 import { log } from '@clack/prompts';
 import { Command } from 'commander';
+import { createRequire } from 'node:module';
 import { createApiCommand } from './commands/api';
 import { createAuthCommand } from './commands/auth';
 import { createDatabaseCommand } from './commands/database';
 import { createTbCommand } from './commands/tb';
+
+const loadPackageJson = createRequire(import.meta.url);
+const packageJson = loadPackageJson('../package.json') as { version: string };
 
 async function main() {
   const program = new Command();
 
   program
     .name('parix')
+    .version(packageJson.version, '-v, --version')
     .description('Parix command line interface')
     .showHelpAfterError()
     .addCommand(createAuthCommand())

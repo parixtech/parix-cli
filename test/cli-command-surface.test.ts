@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'bun:test';
+import packageJson from '../package.json';
 
 const cliArgs = [process.execPath, 'src/cli.ts'];
 
@@ -15,6 +16,13 @@ function outputText(result: ReturnType<typeof runCli>) {
 }
 
 describe('CLI command surface', () => {
+  test('prints the package version with -v', () => {
+    const versionResult = runCli(['-v']);
+
+    expect(versionResult.exitCode).toBe(0);
+    expect(versionResult.stdout.toString().trim()).toBe(packageJson.version);
+  });
+
   test('registers the database command instead of the db command', () => {
     const databaseHelp = runCli(['database', '--help']);
 
